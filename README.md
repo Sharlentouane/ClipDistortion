@@ -54,3 +54,17 @@ Post LPF (encore ici présent dans le clip distortion mais un peu inutile pour l
 
 
 8.Test et maintenance
+
+################### Commentaires #################
+
+Excellent projet!
+
+As-tu réfléchi à l'environnement de travail ? Juce me semble être l'environnement idéal. Si c'est le cas, j'ajouterais dans l'acquisition
+de connaissances les tutoriels de JUCE:
+
+https://juce.com/learn/tutorials
+
+Si tu vises un autre langage que le C++, il faudrait discuter des pours et des contres!
+
+10/10
+
