@@ -1,0 +1,54 @@
+Plan de Travail
+
+1.Énoncé:
+
+Plugin de distorsion asymétrique
+
+
+1.Description:
+
+Le but de ce projet est de réaliser un plugiciel de distorsion muni d’un slider de symétrie dans le même style que le clip distortion de logic. Si le temps le permet, j’aimerais pouvoir ajouter plusieurs nouvelles fonctionnalités dans le but d’améliorer encore plus le plugin.
+
+
+3.Analyse des besoins:
+
+Distorsion : Algorithme de distorsion assymétrique permettant d’obtenir un résultat similaire à celui retrouvé dans le fameux ‘clip distortion’.
+
+Fonctionnalités : Filtres pre-distorsion, contrôle sur le mix, le drive, signal input/output, oversampling, etc.
+
+Interface graphique: Besoin d’une interface graphique rapide et intuitive permettant un contrôle fin des paramètres dans le but de maximiser l’efficacité. 
+
+
+4.Acquisition de connaissances:
+
+Recherche sur les caractéristiques recherchés dans le type de distorsion ainsi que sur le type de filtre dont il serait préférable d’utiliser.
+
+Lire sur le DSP, saturation, filtres, oversampling, etc.
+
+Références:
+
+BOULANGER, R., LAZZARINI, V. : The Audio Programming Book, MIT Press, 2010
+
+SMITH, Steven, The Scientist and Engineer's Guide to Digital Signal Processing, California Technical
+Publishing, 1997 ( http://www.dspguide.com/pdfbook.htm )
+
+
+5.Modèle:
+
+Input/Output Gain (-30/+30db) , Drive (50db min), Mix Knob.
+Pre-Distortion Lowcut filter (off, 6db) Peut-être option pour 12db, 24db, 48db. Mode phase linéaire optionnel.
+
+Symmetry Slider
+
+Post High shelf + gain slider (présent dans le clip distortion de logic mais un peu inutile pour le but recherché aussi)
+Post LPF (encore ici présent dans le clip distortion mais un peu inutile pour le but recherché ici)
+
+
+6.Méthodes:
+
+
+
+7.Implémentation
+
+
+8.Test et maintenance
