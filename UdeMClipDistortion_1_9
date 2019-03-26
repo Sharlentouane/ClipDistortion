@@ -1,0 +1,202 @@
+desc: UdeMClipDistortion_1_9
+
+Things to add:
+-Add different filter slopes
+
+slider1:0<-30,70>Input Gain (dB)
+slider2:0<0,50>Drive (dB)
+slider3:0<-100,100>Symmetry (%)
+slider6:0 <-30,30 >Post Gain (dB)
+slider7:-90<-90,12>Original Signal Gain (dB)
+
+slider8:0<0,100,0.05>PreHP Cutoff
+slider9:100<0,100,0.05>PreLP Cutoff
+slider10:1<0,1,1{off,on}>PreHP state 
+slider11:1<0,1,1{off,on}>PreLP state
+slider12:0<0,1,1{off,on}>DC filter
+
+
+
+@init
+// constants
+piOnSr = $pi / srate;
+sqrt2 = sqrt(2);
+
+
+/////PreHP/////
+HPy0 = HPy1 = 0;
+////////////////
+
+/////PreLP/////
+LPy0 = LPy1 = 0;
+///////////////
+
+
+
+/////DC FILTER/////
+itm1=itm2=otm1=otm2=0;
+///////////////////
+
+
+@slider
+
+////ExpSlider////
+sxPreHP = 16+slider8*1.20103;
+cutoffPreHP = floor(exp(sxPreHP*log(1.059))*8.17742);
+
+sxPreLP = 16+slider9*1.20103;
+cutoffPreLP = floor(exp(sxPreLP*log(1.059))*8.17742);
+////////////////
+
+/////PreHP/////
+HPa = exp(-2 * $pi * cutoffPreHP / srate);
+////////////////
+
+/////PreLP/////
+LPa = exp(-2 * $pi * cutoffPreLP / srate);
+///////////////
+
+
+
+// pre-amplification
+
+pah = ((slider1+slider2)+(slider3*0.50));
+pah < 0 ? (
+pah = 0) ; 
+preamphigh = pow(11, pah * 0.05);
+
+pal = ((slider1+slider2)-(slider3*0.50));
+pal < 0 ? (
+pal = 0) ; 
+preamplow = pow(11, pal * 0.05);
+
+
+// compute coeffs for the transfer function
+drive = 0.5 ;
+k = (2 * drive) / (1 - drive);
+
+// post-amplification
+
+//postamp = pow(10, (slider6 - abs(slider3*0.25))* 0.05);
+
+
+
+postamphigh =  pow(10, (slider6-pah+slider1+slider2) * 0.05);
+postamplow =  pow(10, (slider6-pal+slider1+slider2) * 0.05);
+
+
+
+//Ici important de tester 
+//postamphigh =  pow(10, (slider6-(pah)-(pal)+slider1+slider2) * 0.05);
+//postamplow =  pow(10, (slider6-(pal)-(pah)+slider1+slider2) * 0.05);
+
+//postamp = pow(10, slider6 * 0.05);
+
+// dry amplification
+dryamp = pow(10, (slider1+slider6+slider7) * 0.05);
+
+
+
+
+
+
+
+
+
+@sample
+
+// dry gain and keep for later
+dryspl0 = spl0 * dryamp; dryspl1 = spl1 * dryamp;
+
+
+
+
+/////PreHP/////
+Slider10 > 0 ? (
+HPy0 = (1 - HPa) * spl0 + HPa * HPy0;
+HPy1 = (1 - HPa) * spl1 + HPa * HPy1;
+spl0 = spl0 - HPy0;
+spl1 = spl1 - HPy1;)
+:(
+spl0 = spl0 ; 
+spl1 = spl1);
+////////////////
+
+/////PreLP/////
+Slider11 > 0 ? (
+LPy0 = (1 - LPa) * spl0 + LPa * LPy0;
+LPy1 = (1 - LPa) * spl1 + LPa * LPy1;
+spl0 = LPy0;
+spl1 = LPy1;)
+:(
+spl0 = spl0 ; 
+spl1 = spl1);
+///////////////
+
+
+
+
+
+// pre amplification
+
+spl0 > 0 ? (
+spl0 *= preamphigh ; 
+spl1 *= preamphigh;)
+:(
+spl0 *= preamplow ; 
+spl1 *= preamplow);
+
+// apply transfer function
+spl0 = (1 + k) * spl0 / (1 + k * abs(spl0));
+spl1 = (1 + k) * spl1 / (1 + k * abs(spl1));
+// post lowpass filter left
+
+// post amplification
+//spl0 *= postamp; spl1 *= postamp;
+
+spl0 > 0 ? (
+spl0 *= postamphigh ; 
+spl1 *= postamphigh;)
+:(
+spl0 *= postamplow ; 
+spl1 *= postamplow);
+
+
+spl0 += dryspl0; spl1 += dryspl1;
+
+
+
+/////DC FILTER/////
+Slider12 > 0 ? (
+otm1=0.999*otm1 + spl0 - itm1; itm1=spl0; spl0=otm1;
+otm2=0.999*otm2 + spl1 - itm2; itm2=spl1; spl1=otm2;)
+:(
+spl0 = spl0 ; 
+spl1 = spl1);
+///////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
